@@ -10,6 +10,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK
 from docx.enum.table import WD_TABLE_ALIGNMENT, WD_CELL_VERTICAL_ALIGNMENT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
+from docx.opc.constants import RELATIONSHIP_TYPE as RT
 
 ROOT=Path(__file__).resolve().parents[1]
 BASE=ROOT
@@ -223,6 +224,17 @@ page('Chapter 1  Introduction')
 h('1.1 Sequential decisions with incomplete feedback')
 p('A system often has to choose an action before knowing which option is best. A recommendation service may select one item to display, or a communication system may choose one available channel. The system observes the outcome of the action it takes; it does not automatically learn what every other action would have produced. Repeating this decision creates a trade-off between collecting information and using the information already available.')
 p('A multi-armed bandit isolates this action-selection problem. An action is called an arm, and its reward is a random observation with an unknown mean. In the stationary version, an action’s reward distribution stays fixed. Unlike a general Markov decision process, this experiment has no evolving state controlled by the chosen action and no delayed reward chain. Learning still affects later decisions because the agent’s estimates change with experience [1].')
+link_paragraph=doc.add_paragraph('GitHub Link: ')
+link_paragraph.paragraph_format.space_after=Pt(6)
+link_paragraph.alignment=WD_ALIGN_PARAGRAPH.LEFT
+url='https://github.com/Parvathyok/epsilon-greedy-ucb'
+link=OxmlElement('w:hyperlink')
+link.set(qn('r:id'),doc.part.relate_to(url,RT.HYPERLINK,is_external=True))
+run=OxmlElement('w:r');properties=OxmlElement('w:rPr')
+color=OxmlElement('w:color');color.set(qn('w:val'),'0000FF');properties.append(color)
+underline=OxmlElement('w:u');underline.set(qn('w:val'),'single');properties.append(underline)
+run.append(properties);text=OxmlElement('w:t');text.text=url;run.append(text)
+link.append(run);link_paragraph._p.append(link)
 fig('decision_loop','Figure 1.1  The action-selection loop and the feedback available to the learner.',6.2)
 h('1.2 Exploration and exploitation')
 p('Exploitation selects an action with the highest current estimated reward. Exploration samples alternatives that may be better than their present estimates suggest. A high estimate based on one success is less reliable than the same estimate based on hundreds of observations. An effective policy must decide both when to explore and which action deserves another observation.')
@@ -485,7 +497,7 @@ p('Sensitivity policies are ordered as ε = 0.01, 0.05, 0.10, 0.20; εₜ = min(
 p('Average results over runs, not over checkpoint summaries. For each interval, use the sample standard deviation with one degree of freedom removed and calculate 1.96s/√n. For paired comparisons, first subtract policy regrets within each run. Plot regret every 100 rounds and use non-overlapping 100-round reward blocks. Round only for display; retain full precision during aggregation.')
 small('Execution environment: Python '+R['metadata']['python']+'; NumPy '+R['metadata']['numpy']+'. Random streams use NumPy default_rng and SeedSequence. Exact random draws depend on these generator choices and call order; the protocol fixes both in the implementation.')
 
-small('Project repository (source code, datasets, figures and report): https://github.com/Parvathyok/epsilon-greedy-ucb')
+
 
 OUT.parent.mkdir(exist_ok=True)
 doc.save(OUT)
