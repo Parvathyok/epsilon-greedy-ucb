@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#faf9f6"><title>Bandit comparison · Parvathy O K</title><link rel="stylesheet" href="/styles.css"></head>
+<body>
+<a class="skip" href="#results">Skip to results</a>
+<header><a class="brand" href="/">Bandit comparison</a><nav aria-label="Project files"><a href="/report.docx">Word report</a><a href="/report.pdf">PDF report</a><a href="/results.csv">Results CSV</a></nav></header>
+<main>
+<div class="intro"><h1>How should an agent<br>choose its next action?</h1><p>Compare ε-greedy and UCB through repeated decisions.<br> Examine the saved study or run an experiment of your own.</p></div>
+<div class="workspace">
+<aside><h2>Experiment settings</h2><p class="muted">Ten actions. Binary rewards. Identical initialization.</p>
+$error
+<form action="/simulate" method="post">
+<label for="scenario">Reward scenario</label><select name="scenario" id="scenario">$options</select>
+<div class="fields"><div><label for="epsilon">Exploration ε</label><input id="epsilon" name="epsilon" type="number" min="0" max="1" step="0.01" value="$epsilon" required></div><div><label for="c">UCB coefficient c</label><input id="c" name="c" type="number" min="0.05" max="3" step="any" value="$coefficient" required></div></div>
+<p class="hint">Standard UCB1 uses c = √2 ≈ 1.414.</p>
+<div class="fields"><div><label for="runs">Independent runs</label><input id="runs" name="runs" type="number" min="20" max="500" step="1" value="$runs" required></div><div><label for="horizon">Rounds per run</label><input id="horizon" name="horizon" type="number" min="100" max="10000" step="100" value="$horizon" required></div></div>
+<label for="seed">Random seed</label><input id="seed" name="seed" type="number" min="0" max="4294967295" step="1" value="$seed" required>
+<button type="submit">Run comparison</button><p class="hint">Usually completes in a few seconds. Keep this page open while it runs.</p>
+</form>
+<div class="presets"><h3>Saved report study</h3><a href="/?scenario=wide">Well-separated rewards</a><a href="/?scenario=close">Closely matched rewards</a><a href="/?scenario=switch">Reversal of the best action</a></div>
+</aside>
+<section id="results" aria-label="Comparison results"><div class="result-heading"><h2>$title</h2><span class="status">$status</span></div><p>$description</p>
+<div class="chart-heading"><h3>Cumulative pseudo-regret</h3><span>Lower is better</span></div><div class="chart">$chart</div><p class="legend">$legend</p><p class="hint">Solid: UCB. Dashed: ε-greedy. Shading: pointwise 95% intervals. Horizontal axis: decision round.</p>
+<div class="results-table"><table><caption>$runs independent runs · $horizon decisions per run</caption><thead><tr><th scope="col">Policy</th><th scope="col">Reward / round</th><th scope="col">Pseudo-regret</th><th scope="col">Best action<br>last $tail</th></tr></thead><tbody>$rows</tbody></table></div>
+<p class="note">$note</p><details><summary>How to read this comparison</summary><p>Pseudo-regret adds the difference between the best available mean reward and the mean of each chosen action. It measures the expected cost of the decisions, without extra reward-draw noise. Table intervals are approximate 95% Monte Carlo intervals across runs.</p><p>All policies sample each action once and use sample-mean updates. The saved reversal study also includes a constant-step ε-greedy diagnostic. The same potential rewards are shared across policies; unchosen rewards remain hidden from the learners.</p></details>
+</section></div>
+<footer><p>PARVATHY O K · RA2311026050020 · Section B</p><p>Action Selection · Fundamentals of Reinforcement Learning</p></footer>
+</main></body></html>
